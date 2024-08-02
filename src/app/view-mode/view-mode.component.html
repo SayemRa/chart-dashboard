@@ -1,0 +1,17 @@
+<mat-form-field appearance="fill">
+    <mat-label>Date Range</mat-label>
+    <mat-date-range-input [formGroup]="dateRangeForm" [rangePicker]="picker">
+      <input matStartDate formControlName="start">
+      <input matEndDate formControlName="end">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+  
+  <div *ngFor="let chart of charts">
+    <highcharts-chart
+      [Highcharts]="Highcharts"
+      [options]="chart.options"
+    ></highcharts-chart>
+  </div>
+  

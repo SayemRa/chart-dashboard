@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>{{data.isEdit ? 'Edit Chart' : 'Add Chart'}}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="chartForm">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let type of chartTypes" [value]="type">{{type}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Color</mat-label>
+      <input matInput formControlName="color" type="color">
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSave()">Save</button>
+</div>
