@@ -14,25 +14,21 @@ import { AppState } from '../state-controllers/chart-controllers/store/states/ap
 })
 export class ViewModeComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts;
+  dateRangeForm!: FormGroup;
   charts: Chart[] = [];
   filteredCharts: any[] = [];
-  public dateRangeForm: FormGroup = new FormGroup({
-    start: new FormControl(),
-    end: new FormControl(),
-  });
-
+  dateInvalid = false;
 
   constructor(private fb: FormBuilder, private store: Store<AppState>) {}
 
   ngOnInit(): void {
-    this.dateRangeForm = new FormGroup({
-      start:  new FormControl(),
-      end:  new FormControl(),
+    this.dateRangeForm = this.fb.group({
+      start: [null],
+      end: [null]
     });
 
-    this.loadCharts();
-
     this.store.select('charts').subscribe(charts => {
+      console.log("charts",charts)
       this.charts = charts;
       this.filterCharts();
     });
@@ -40,16 +36,23 @@ export class ViewModeComponent implements OnInit {
     this.dateRangeForm.valueChanges.subscribe(() => this.filterCharts());
   }
 
-  loadCharts(): void {
-    // Generate or fetch chart data and update this.charts
-  }
-  
   filterCharts(): void {
     const { start, end } = this.dateRangeForm.value;
+    const startDate = start ? new Date(start) : null;
+    const endDate = end ? new Date(end) : null;
+
+    if (startDate && endDate && startDate > endDate) {
+      this.dateInvalid = true;
+      this.filteredCharts = [];
+      return;
+    } else {
+      this.dateInvalid = false;
+    }
+
     this.filteredCharts = this.charts.map(chart => {
-      const filteredData = chart.data.filter((d: any) => {
+      const filteredData = chart.data.filter(d => {
         const date = new Date(d.date);
-        return (!start || date >= start) && (!end || date <= end);
+        return (!startDate || date >= startDate) && (!endDate || date <= endDate);
       });
 
       return {
@@ -58,13 +61,11 @@ export class ViewModeComponent implements OnInit {
           title: { text: chart.name },
           series: [{
             type: chart.type,
-            data: filteredData.map((d: any) => [new Date(d.date).getTime(), d.value]),
+            data: filteredData.map(d => [new Date(d.date).getTime(), d.value]),
             color: chart.color
           }]
         }
       };
     });
-  };
-
-
+  }
 }

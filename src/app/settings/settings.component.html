@@ -1,6 +1,13 @@
-<button mat-button (click)="openDialog()">Add Chart</button>
-<div *ngFor="let chart of charts">
-  <span>{{ chart.name }}</span>
-  <button mat-button (click)="editChart(chart)">Edit</button>
-  <button mat-button (click)="removeChart(chart)">Remove</button>
+<div class="container">
+  <button mat-raised-button color="primary" (click)="openDialog()">Add Chart</button>
+  <div *ngFor="let chart of charts" class="chart-item">
+    <span>{{ chart.name }}</span>
+    <button mat-icon-button color="accent" (click)="openDialog(chart)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="removeChart(chart)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
 </div>
+
