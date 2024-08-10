@@ -20,9 +20,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
 import { reducers } from './state-controllers/chart-controllers/store/states/app.state';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'; 
+import { WeatherService } from './services/weather.service';
+import { WeatherEffects } from './state-controllers/chart-controllers/store/effects/weather.effects';
+import { HttpClientModule } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
+
 
 @NgModule({
   declarations: [
@@ -48,10 +54,15 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     MatIconModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers),
-    StoreDevtoolsModule.instrument({ maxAge: 25 })
+    StoreDevtoolsModule.instrument({ maxAge: 25 }),
+    EffectsModule.forRoot([WeatherEffects]),
+    HttpClientModule,
+    
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    WeatherService,
+    DatePipe,
   ],
   bootstrap: [AppComponent],
   // entryComponents: [ChartDialogComponent],
