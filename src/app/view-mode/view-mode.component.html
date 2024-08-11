@@ -14,8 +14,7 @@
     </mat-form-field>
     <button mat-raised-button color="primary" type="submit">Get Weather Data</button>
   </form>
-  <mat-hint class="text-danger" *ngIf="dateInvalid">The end date must be after the start date</mat-hint>
-
+  <!-- <mat-hint class="text-danger" *ngIf="dateInvalid">The end date can't be earlier than start date</mat-hint> -->
 
   <div *ngIf="filteredCharts.length; else noCharts">
     <div *ngFor="let chart of filteredCharts" class="chart-item">
