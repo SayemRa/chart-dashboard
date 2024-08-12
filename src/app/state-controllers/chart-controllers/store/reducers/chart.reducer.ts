@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { addChart, ChartActions, ChartActionTypes, editChart, removeChart } from '../actions/chart.action';
+import { addChart, ChartActions, ChartActionTypes, editChart, removeChart, setChart } from '../actions/chart.action';
 import { Chart } from '../../../../models/chart.model';
 import { Action } from '@ngrx/store';
 
@@ -24,22 +24,9 @@ const _chartReducer = createReducer(
   initialState,
   on(addChart, (state, { chart }) => [...state, chart]),
   on(editChart, (state, { chart }) => state.map(c => c.id === chart.id ? chart : c)),
-  on(removeChart, (state, { chartId }) => state.filter(c => c.id !== chartId))
+  on(removeChart, (state, { chartId }) => state.filter(c => c.id !== chartId)),
+  on(setChart, (state, { weatherData }) => [...state, weatherData]),
 );
-
-// export function chartReducer(state: Chart[], action: Action) {
-//   return _chartReducer(state, action);
-// }
-
-
-// export function chartReducer(state: Chart[] = [], action: ChartActions): Chart[] {
-//   switch (action.type) {
-//     case ChartActionTypes.ADD_CHART:
-//       return [...state, action.payload];
-//     default:
-//       return state;
-//   }
-// }
 
 export function chartReducer(state: Chart[], action: Action) {
   return _chartReducer(state, action);

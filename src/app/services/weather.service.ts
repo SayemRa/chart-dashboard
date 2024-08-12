@@ -23,7 +23,7 @@ export class WeatherService {
 
     return this.http.get<any>(this.apiUrl, { params }).pipe(
       map(response => {
-        // Transforming the API response into a format suitable for Highcharts
+        // API response transformed into a format - suitable for Highcharts
         const data = response.daily.time.map((date: string, index: number) => ({
           date,
           temperature: response.daily.temperature_2m_max[index]
