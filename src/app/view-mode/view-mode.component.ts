@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { AppState } from '../state-controllers/chart-controllers/store/states/app.state';
-import { Chart } from '../models/chart.model';
-import * as Highcharts from 'highcharts';
 import { WeatherService } from '../services/weather.service';
-import { setChart } from '../state-controllers/chart-controllers/store/actions/chart.action';
+import * as Highcharts from 'highcharts';
+import { Chart } from '../models/chart.model';
+import { AppState } from '../state-controllers/chart-controllers/store/states/app.state';
 import { setDateRange } from '../state-controllers/chart-controllers/store/actions/date-range.action';
+import { loadWeatherData } from '../state-controllers/chart-controllers/store/actions/weahter.action';
 
 @Component({
   selector: 'app-view-mode',
@@ -18,6 +18,14 @@ export class ViewModeComponent implements OnInit {
   dateRangeForm!: FormGroup;
   charts: Chart[] = [];
   filteredCharts: any[] = [];
+  cities = [
+    { name: 'Helsinki', value: { lat: 60.1695, lng: 24.9354 } },
+    { name: 'Tampere', value: { lat: 61.4991, lng: 23.7871 } },
+    { name: 'Turku', value: { lat: 60.4515, lng: 22.2687 } },
+    { name: 'Oulu', value: { lat: 65.0124, lng: 25.4682 } },
+    { name: 'Rovaniemi', value: { lat: 66.5, lng: 25.7167 } },
+    { name: 'Joensuu', value: { lat: 62.6012, lng: 29.7632} },
+  ];
 
   constructor(
     private fb: FormBuilder, 
@@ -28,7 +36,8 @@ export class ViewModeComponent implements OnInit {
   ngOnInit(): void {
     this.dateRangeForm = this.fb.group({
       start: [null],
-      end: [null]
+      end: [null],
+      city: ['']
     });
 
     // Load charts from the store
@@ -41,32 +50,22 @@ export class ViewModeComponent implements OnInit {
       if (dateRange.startDate && dateRange.endDate) {
         const startDate = new Date(dateRange.startDate);
         const endDate = new Date(dateRange.endDate);
-
-        this.dateRangeForm.setValue({
-          start: startDate,
-          end: endDate
-        }, { emitEvent: false });
-
-        // Fetch and display data automatically
-        this.fetchAndUpdateData(startDate, endDate);
       }
     });
 
     this.dateRangeForm.valueChanges.subscribe(values => {
-      const { start, end } = values;
+      const { start, end, city } = values;
       const startDate = start ? new Date(start).toISOString().split('T')[0] : null;
       const endDate = end ? new Date(end).toISOString().split('T')[0] : null;
       this.store.dispatch(setDateRange({ startDate, endDate }));
       this.filterCharts();
-      if (startDate && endDate) {
-        this.fetchAndUpdateData(new Date(startDate), new Date(endDate));
+      if (startDate && endDate && city) {
+        this.store.dispatch(loadWeatherData({ start: startDate, end: endDate, latitude: city.lat, longitude: city.lng }));
       }
     });
-  }
 
-  // Fetch and update data
-  fetchAndUpdateData(startDate: Date, endDate: Date): void {
-    this.weatherService.getWeatherData(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]).subscribe(data => {
+    // Subscribe to weather data from the store
+    this.store.select(state => state.weather.data).subscribe(data => {
       const chartData = this.convertToChartData(data);
       this.updateChartsWithData(chartData);
     });
@@ -80,9 +79,9 @@ export class ViewModeComponent implements OnInit {
   }
 
   onSubmit() {
-    const { start, end } = this.dateRangeForm.value;
-    if (start && end) {
-      this.fetchAndUpdateData(start, end);
+    const { start, end, city } = this.dateRangeForm.value;
+    if (start && end && city) {
+      this.store.dispatch(loadWeatherData({ start: new Date(start).toISOString().split('T')[0], end: new Date(end).toISOString().split('T')[0], latitude: city.lat, longitude: city.lng }));
     }
   }
 

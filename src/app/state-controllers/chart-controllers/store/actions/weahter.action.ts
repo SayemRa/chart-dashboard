@@ -3,7 +3,7 @@ import { createAction, props } from '@ngrx/store';
 
 export const loadWeatherData = createAction(
   '[Weather] Load Weather Data',
-  props<{ start: string; end: string }>()
+  props<{ start: string; end: string; latitude: number; longitude: number }>()
 );
 
 export const loadWeatherDataSuccess = createAction(

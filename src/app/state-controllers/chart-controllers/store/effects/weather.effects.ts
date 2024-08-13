@@ -14,7 +14,7 @@ export class WeatherEffects {
     this.actions$.pipe(
       ofType(loadWeatherData),
       mergeMap((action) =>
-        this.weatherService.getWeatherData(action.start, action.end).pipe(
+        this.weatherService.getWeatherData(action.start, action.end, action.latitude, action.longitude).pipe(
           map((data) => loadWeatherDataSuccess({ data })),
           catchError((error) => of(loadWeatherDataFailure({ error })))
         )

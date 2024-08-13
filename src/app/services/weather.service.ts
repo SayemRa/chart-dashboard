@@ -11,10 +11,10 @@ export class WeatherService {
 
   constructor(private http: HttpClient) {}
 
-  getWeatherData(startDate: string, endDate: string): Observable<any> {
+  getWeatherData(startDate: string, endDate: string, latitude: number, longitude: number): Observable<any> {
     const params = {
-      latitude: '61.4991',
-      longitude: '23.7871',
+      latitude: latitude,
+      longitude: longitude,
       start_date: startDate,
       end_date: endDate,
       daily: 'temperature_2m_max',

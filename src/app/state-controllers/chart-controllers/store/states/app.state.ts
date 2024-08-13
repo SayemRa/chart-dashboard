@@ -2,11 +2,11 @@ import { ActionReducerMap, Action } from '@ngrx/store';
 import { chartReducer } from '../reducers/chart.reducer';
 import { Chart } from '../../../../models/chart.model';
 import { ChartActions } from '../actions/chart.action';
-import { weatherReducer } from '../reducers/weather.reducer';
+import { weatherReducer, WeatherState } from '../reducers/weather.reducer';
 import { dateRangeReducer, DateRangeState } from '../reducers/date-range.reducer';
 
 export interface AppState {
-  weather: Chart[];
+  weather: WeatherState;
   charts: Chart[];
   newChart: any;
   dateRange: DateRangeState;
